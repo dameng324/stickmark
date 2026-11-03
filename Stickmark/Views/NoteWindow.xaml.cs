@@ -392,6 +392,8 @@ public partial class NoteWindow : Window
             _wysiwyg ??= new MarkdownWysiwyg(WysiwygEditor);
             _wysiwyg.Changed -= OnWysiwygChanged;
             _wysiwyg.Changed += OnWysiwygChanged;
+            _wysiwyg.EscapeRequested -= OnWysiwygEscapeRequested;
+            _wysiwyg.EscapeRequested += OnWysiwygEscapeRequested;
 
             await _wysiwyg.LoadAsync(GetEditorPlainText());
             ApplyZoomToWebViews();
@@ -500,11 +502,16 @@ public partial class NoteWindow : Window
 
     private void OnWindowPreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Escape && _isFullscreen)
+        if (e.Key == Key.Escape && _wysiwygOn)
         {
-            ExitFullscreen();
+            _ = ExitWysiwygAsync(save: true);
             e.Handled = true;
         }
+    }
+
+    private void OnWysiwygEscapeRequested()
+    {
+        if (_wysiwygOn) _ = Dispatcher.InvokeAsync(async () => await ExitWysiwygAsync(save: true));
     }
 
     private void FullscreenButton_OnClick(object sender, RoutedEventArgs e) => ToggleFullscreen();

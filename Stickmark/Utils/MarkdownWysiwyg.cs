@@ -27,6 +27,9 @@ public sealed class MarkdownWysiwyg
     /// Called when the edit content (debounced Markdown source) changes.
     public event Action<string>? Changed;
 
+    /// Raised when the user presses Escape inside the editor and wants to return to preview.
+    public event Action? EscapeRequested;
+
     public MarkdownWysiwyg(WebView2 web) => _web = web;
 
     public async Task InitAsync()
@@ -151,6 +154,8 @@ public sealed class MarkdownWysiwyg
             if (type == "ready") { _ready?.TrySetResult(true); return; }
             if (type == "change" && doc.RootElement.TryGetProperty("md", out var md))
                 Changed?.Invoke(md.GetString() ?? string.Empty);
+            else if (type == "escape")
+                EscapeRequested?.Invoke();
         }
         catch { /* Ignore message of unknown format */ }
     }

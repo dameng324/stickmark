@@ -355,6 +355,15 @@ function wireToolbar() {
 }
 
 // C# → JS: Note content injection (string data only, not HTML injection)
+// Esc exits WYSIWYG editing and returns to the rendered preview.
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (window.chrome && window.chrome.webview) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.chrome.webview.postMessage(JSON.stringify({ type: "escape" }));
+  }
+}, true);
 window.SPEditor = {
   setMarkdown(md) {
     suppress = true;

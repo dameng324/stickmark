@@ -13,6 +13,7 @@ This file starts from the point it was introduced — earlier history lives in t
 - Added a fullscreen note mode (`F11` / header button).
 - Removed the redundant Eye button and moved Delete into the overflow menu with red emphasis.
 - Reworked the close button as a vector icon and tightened the top spacing in preview mode.
+- Escape now exits WYSIWYG editing only and no longer leaves fullscreen mode.
 - Persisted per-note WebView zoom across preview/editing switches and restarts.
 - Release builds now publish an **Inno Setup installer** instead of a bare executable. The in-app updater downloads and verifies the installer before applying it.
 - Retargeted the application and test projects to `net10.0-windows`.
