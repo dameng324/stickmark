@@ -1,0 +1,279 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Stickmark.Services;
+using Stickmark.Utils;
+using Stickmark.ViewModels;
+
+namespace Stickmark;
+
+public partial class App : Application
+{
+    private const string SingleInstanceMutexName = @"Local\Stickmark.SingleInstance";
+
+    private IHost? _host;
+    private Mutex? _singleInstanceMutex;
+    private bool _ownsMutex;
+    private InstanceChannel? _instanceChannel;
+
+    public static IServiceProvider Services =>
+        ((App)Current)._host?.Services
+        ?? throw new InvalidOperationException("Host not initialized.");
+
+    protected override async void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+
+        DispatcherUnhandledException += (_, args) =>
+        {
+            Log.Error(args.Exception, "Dispatcher unhandled exception");
+            args.Handled = true;
+        };
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            Log.Error(args.ExceptionObject as Exception, "AppDomain unhandled exception");
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            Log.Error(args.Exception, "Unobserved task exception");
+            args.SetObserved();
+        };
+
+        // Collect the file path passed as a command line argument (double click/'Open Program'/drop).
+        var startupFiles = ExtractFilePaths(e.Args);
+
+        _singleInstanceMutex = new Mutex(initiallyOwned: false, SingleInstanceMutexName, out _);
+        try
+        {
+            _ownsMutex = _singleInstanceMutex.WaitOne(TimeSpan.Zero, exitContext: false);
+        }
+        catch (AbandonedMutexException)
+        {
+            // Previous instance crashed without releasing — we now own the mutex, proceed.
+            _ownsMutex = true;
+        }
+
+        if (!_ownsMutex)
+        {
+            // Another instance is already running — if there is a file being opened, it will be passed to that instance and quietly exit.
+            if (startupFiles.Length > 0) InstanceChannel.TrySend(startupFiles);
+            Shutdown(0);
+            return;
+        }
+
+        // Register itself in the .md 'open with' list (HKCU, silently best-effort).
+        FileAssociationRegistrar.Ensure(Environment.ProcessPath ?? string.Empty);
+
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+        var dataRoot = EnsureDataRoot();
+
+        var dbPath = Path.Combine(dataRoot, "notes.db");
+        var settingsPath = Path.Combine(dataRoot, "settings.json");
+        var logPath = Path.Combine(dataRoot, "logs", "app-.log");
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.Debug()
+            .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+            .CreateLogger();
+
+        _host = Host.CreateDefaultBuilder()
+            .UseSerilog()
+            .ConfigureServices(services =>
+            {
+                services.AddSingleton<INoteRepository>(sp =>
+                {
+                    var s = sp.GetRequiredService<ISettingsService>().Current;
+                    // Vault mode (opt-in): Runs on a .md set of folders. In case of failure, safe fallback to LiteDB.
+                    if (string.Equals(s.StorageMode, "vault", StringComparison.OrdinalIgnoreCase)
+                        && !string.IsNullOrWhiteSpace(s.VaultPath))
+                    {
+                        try
+                        {
+                            VaultBootstrap.EnsureSeeded(s.VaultPath, dbPath); // LiteDB at first conversion → Vault transfer
+                            return new VaultRepository(s.VaultPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Vault repository init failed; falling back to LiteDB");
+                        }
+                    }
+                    return new NoteRepository(dbPath);
+                });
+                services.AddSingleton<ISettingsService>(sp => new SettingsService(
+                    settingsPath, sp.GetRequiredService<ILogger<SettingsService>>()));
+                // Watch Vault Folder (Vault mode only) — Assemble collaborators into delegates and combine them without circular dependencies.
+                services.AddSingleton<IVaultWatcher>(sp =>
+                {
+                    var repo = sp.GetRequiredService<INoteRepository>() as VaultRepository;
+                    var wm = sp.GetRequiredService<IWindowManager>();
+                    return new VaultWatcherService(
+                        isRecentSelfWrite: f => repo?.IsRecentSelfWrite(f) ?? false,
+                        reloadAsync: () => repo?.ReloadWithDiffAsync() ?? Task.FromResult(VaultDiff.Empty),
+                        applyAsync: d => Current.Dispatcher.InvokeAsync(() => wm.ApplyVaultDiffAsync(d)).Task.Unwrap(),
+                        notify: (t, m) => sp.GetService<ITrayService>()?.ShowNotification(t, m),
+                        sp.GetRequiredService<ILogger<VaultWatcherService>>());
+                });
+                services.AddSingleton<IAutoStartService, AutoStartService>();
+                services.AddSingleton<IHotkeyService, HotkeyService>();
+                services.AddSingleton<IWindowManager, WindowManager>();
+                services.AddSingleton<IBackupService, BackupService>();
+                services.AddSingleton<IUpdateService, UpdateService>();
+                services.AddSingleton<ITrayService, TrayService>();
+                services.AddTransient<NotesListViewModel>();
+                services.AddTransient<QuickSwitcherViewModel>();
+                services.AddTransient<SettingsViewModel>();
+            })
+            .Build();
+
+        await _host.StartAsync().ConfigureAwait(true);
+
+        try
+        {
+            LocalizationService.ApplyCulture(_host.Services.GetRequiredService<ISettingsService>().Current.Language);
+
+            var repo = _host.Services.GetRequiredService<INoteRepository>();
+            try
+            {
+                var purged = await repo
+                    .PurgeTrashedOlderThanAsync(DateTime.UtcNow.AddDays(-30))
+                    .ConfigureAwait(true);
+                if (purged > 0) Log.Information("Purged {Count} expired trashed notes", purged);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Failed to auto-purge expired trash");
+            }
+
+            var manager = _host.Services.GetRequiredService<IWindowManager>();
+            await manager.RestoreAllAsync().ConfigureAwait(true);
+
+            _host.Services.GetRequiredService<ITrayService>().Initialize();
+
+            // If in vault mode, start watching the folder (after tray initialization — after the notification callback is ready).
+            if (_host.Services.GetRequiredService<INoteRepository>() is VaultRepository
+                && _host.Services.GetRequiredService<ISettingsService>().Current.VaultPath is { Length: > 0 } vaultPath)
+            {
+                _host.Services.GetRequiredService<IVaultWatcher>().Start(vaultPath);
+            }
+
+            // Starts the named-pipe server, which receives and opens the file path passed by other processes during execution.
+            // Pipe input can be sent to any process in the same session, so it is the same as the command line.
+            // Open after restricting existence, supported format, and number (opening random files, preventing window bombs).
+            _instanceChannel = new InstanceChannel();
+            _instanceChannel.StartServer(paths =>
+            {
+                var safe = ExtractFilePaths(paths);
+                if (safe.Length > 0) Dispatcher.InvokeAsync(() => OpenFiles(manager, safe));
+            });
+
+            // If this execution was started with a file argument (double-click, etc.), open it now.
+            if (startupFiles.Length > 0) OpenFiles(manager, startupFiles);
+
+            var settings = _host.Services.GetRequiredService<ISettingsService>().Current;
+            var hotkeys = _host.Services.GetRequiredService<IHotkeyService>();
+            hotkeys.Configure(
+                newNoteHandler: () => manager.CreateAndShowNew(),
+                openNotesListHandler: manager.OpenNotesList);
+            hotkeys.Apply(settings.GlobalHotkeysEnabled, settings.NewNoteHotkey, settings.NotesListHotkey);
+
+            if (settings.AutoCheckForUpdates)
+            {
+                var updater = _host.Services.GetRequiredService<IUpdateService>();
+                _ = Task.Run(() => updater.CheckAsync(userInitiated: false));
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Startup failed");
+            MessageBox.Show($"Stickmark failed to start:\n{ex.Message}", "Stickmark",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown(1);
+        }
+    }
+
+    private static string EnsureDataRoot()
+    {
+        var local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var dataRoot = Path.Combine(local, "Stickmark");
+        var legacyRoot = Path.Combine(local, "StickyPad");
+
+        // Preserve notes and settings when upgrading from the original StickyPad name.
+        if (!Directory.Exists(dataRoot) && Directory.Exists(legacyRoot))
+        {
+            try
+            {
+                Directory.Move(legacyRoot, dataRoot);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Could not migrate the legacy data directory");
+            }
+        }
+
+        Directory.CreateDirectory(dataRoot);
+        return dataRoot;
+    }
+    private const int MaxFilesToOpen = 20;
+
+    private static string[] ExtractFilePaths(string[] args)
+    {
+        if (args is null || args.Length == 0) return Array.Empty<string>();
+        var paths = new List<string>();
+        foreach (var arg in args)
+        {
+            if (string.IsNullOrWhiteSpace(arg)) continue;
+            var full = LinkedFile.Normalize(arg);
+            if (File.Exists(full) && LinkedFile.IsSupported(full)) paths.Add(full);
+        }
+        // Limit the number of files opened at once — prevent window bombing (DoS) by sending thousands of paths through a pipe.
+        return paths.Distinct(StringComparer.OrdinalIgnoreCase).Take(MaxFilesToOpen).ToArray();
+    }
+
+    private static async void OpenFiles(IWindowManager manager, string[] paths)
+    {
+        foreach (var path in paths)
+        {
+            try { await manager.OpenFileAsync(path).ConfigureAwait(true); }
+            catch (Exception ex) { Log.Error(ex, "Failed to open file {Path}", path); }
+        }
+    }
+
+    protected override async void OnExit(ExitEventArgs e)
+    {
+        try
+        {
+            _instanceChannel?.Dispose();
+            if (_host is not null)
+            {
+                _host.Services.GetService<IVaultWatcher>()?.Dispose();   // before tray (disable notification callback)
+                _host.Services.GetService<IHotkeyService>()?.Unregister();
+                _host.Services.GetService<ITrayService>()?.Dispose();
+                if (_host.Services.GetService<ISettingsService>() is { } settings)
+                {
+                    await settings.SaveAsync().ConfigureAwait(true);
+                }
+                await _host.StopAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(true);
+                if (_host.Services.GetService<INoteRepository>() is IDisposable repo) repo.Dispose();
+                _host.Dispose();
+            }
+        }
+        finally
+        {
+            if (_ownsMutex && _singleInstanceMutex is not null)
+            {
+                try { _singleInstanceMutex.ReleaseMutex(); } catch { /* nothing to do */ }
+                _singleInstanceMutex.Dispose();
+            }
+            await Log.CloseAndFlushAsync().ConfigureAwait(true);
+            base.OnExit(e);
+        }
+    }
+}

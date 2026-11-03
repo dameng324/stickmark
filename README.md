@@ -1,14 +1,10 @@
-# StickyPad
-
-**English** | [한국어](README.ko.md)
+# Stickmark
 
 > 📝 A lightweight, fast sticky‑note app for Windows — instant capture, rich text, tags, and wiki‑style links, all stored locally.
 
-StickyPad lives in your system tray and puts a note on your desktop in a single keystroke. Notes are colorful, resizable, always‑on‑top‑capable, and searchable. Everything is saved locally in an embedded database — no account, no cloud, no telemetry.
+Stickmark lives in your system tray and puts a note on your desktop in a single keystroke. Notes are colorful, resizable, always‑on‑top‑capable, and searchable. Everything is saved locally in an embedded database — no account, no cloud, no telemetry.
 
-![StickyPad notes on the desktop](docs/images/notes-desktop.png)
-
-<sub>Built with **.NET 8 · WPF · MVVM**. Windows 10/11, x64.</sub>
+<sub>Built with **.NET 10 · WPF · MVVM**. Windows 10/11, x64.</sub>
 
 ---
 
@@ -36,41 +32,27 @@ StickyPad lives in your system tray and puts a note on your desktop in a single 
 - ⚡ **Instant capture** — `Ctrl+Shift+N` drops a new note anywhere, even when no window is focused.
 - 🎨 **Six color themes** — Yellow, Pink, Blue, Green, Purple, and a dark Gray.
 - ✍️ **Rich text** — bold, italic, underline, strikethrough, lists, task checkboxes, inline code, code blocks, alignment, and per‑selection font sizes.
-- 🧩 **Renders Markdown & HTML** — flip a note to Markdown or HTML mode and it renders live (via WebView2).
+- 🧩 **Eye-first Markdown preview** — notes open as rendered Markdown in a WebView2 preview. Double-click the text to edit; click elsewhere to return to preview.
 - 🏷️ **Tags & search** — type `#tag` inside a note; filter and full‑text search from the **All notes** window with match highlighting.
 - 🔗 **Wiki links** — write `[[Note title]]` to link notes together; click to jump.
-- 📂 **Open & link `.md` files** — open a Markdown/text file from disk (double‑click, drag‑drop, or `Ctrl+O`) and StickyPad renders it in a note. Edits save straight back to the file, and external changes reload automatically — a two‑way link, not a copy.
+- 📂 **Open & link `.md` files** — open a Markdown/text file from disk (double‑click, drag‑drop, or `Ctrl+O`) and Stickmark renders it in a note. Edits save straight back to the file, and external changes reload automatically — a two‑way link, not a copy.
 - 🗑️ **Safe deletes** — a Recycle Bin keeps deleted notes for 30 days before auto‑purging.
 - 🖥️ **Stays out of the way** — tray icon, per‑note opacity, always‑on‑top pin, multi‑monitor aware.
 - 💾 **Local‑first** — an embedded LiteDB file on your machine, with one‑click JSON backup export/import.
-- 🌐 **Bilingual UI** — English & Korean; auto-detects your Windows language and switchable in Settings.
+- 🌐 **English UI** — clean English labels throughout, with a language selector reserved for future localization.
 - 🗄️ **Vault mode** — store your notes as human‑readable `.md` files in a folder you choose (Obsidian‑compatible). Put it in a cloud folder for multi‑device sync. Opt in under **Settings → Storage**; the built‑in database stays the default. External edits (cloud sync, Obsidian) are picked up live while the app is running.
 - ✅ **Unified to-do view** — every checkbox from every note, gathered in one tab; check it off right there and the source note updates. Plus a fuzzy **quick switcher (Ctrl+P)** to jump to any note.
 
 ## Screenshots
 
-### Live rendering — Text · Markdown · HTML
-Switch a note between **Text / Markdown / HTML** and it renders on the spot:
-
-![Text, Markdown and HTML rendering](docs/images/render-demo.gif)
-
-| Desktop notes | All notes (search • tags • trash) | In‑note editor |
-| :---: | :---: | :---: |
-| ![Desktop notes](docs/images/notes-desktop.png) | ![All notes window](docs/images/all-notes.png) | ![Note editor toolbar](docs/images/note-editor.png) |
-
-> Screenshots live in [`docs/images/`](docs/images). Replace the placeholders with your own captures anytime.
-
-### WYSIWYG Markdown editing
-Toggle **✎** on a Markdown note for live‑preview editing — headings, **bold**, *italic*, `code`, quotes and lists render inline as you type, and the markdown markers hide on lines you're not editing (Obsidian‑style). Your note is still saved as plain Markdown source, so it round‑trips cleanly with Vault `.md` files. Turn ✎ off anytime for raw source editing. Checkboxes are clickable, fenced code blocks are syntax‑highlighted (editor and preview/export), and lists auto‑continue on Enter.
-
-![WYSIWYG Markdown editing](docs/images/wysiwyg.png)
+Screenshots are intentionally omitted from this fork until updated English captures are available.
 
 ## Features
 
 ### Notes & editing
 - Rich‑text editor (WPF `RichTextBox`) with a toolbar that appears on hover/focus and hides in preview mode.
-- **Text / Markdown / HTML modes** — pick a mode per note from the header (T / M / &lt;/&gt;). Markdown (rendered with [Markdig](https://github.com/xoofx/markdig)) and raw HTML render in a themed **WebView2** preview; `Ctrl+E` toggles source ⇄ rendered, and links open in your browser.
-- **WYSIWYG Markdown editing** — live‑preview editing that hides markers as you type; saved as plain Markdown (offline).
+- **Eye-first Markdown preview** — notes are rendered with [Markdig](https://github.com/xoofx/markdig) in a themed **WebView2** view. Double-click the rendered text to enter WYSIWYG editing; `Ctrl+E` or the Eye button returns to preview, and links open in your browser.
+- **WYSIWYG Markdown editing** — double‑click rendered note text to edit; markers hide as you type and editing ends when focus leaves. Saved as plain Markdown (offline).
 - **Formatting:** bold, italic, underline, strikethrough, bulleted & numbered lists, left/center/right alignment, inline code and code blocks, and a per‑selection font‑size picker.
 - **Task checkboxes** — insert inline `☐` items you can tick right inside the note.
 - **Preview / Edit toggle** (`Ctrl+E`) locks a note read‑only so you can't fumble the text while reading it.
@@ -86,7 +68,7 @@ Toggle **✎** on a Markdown note for live‑preview editing — headings, **bol
 - **Auto‑linked URLs** — `http(s)://…` addresses become clickable and open in your browser.
 
 ### Linked files (open `.md` from disk)
-- **Open a Markdown/text file** three ways: double‑click it (once StickyPad is set as its *Open with* app), **drag‑drop** it onto any note, or press **`Ctrl+O`** — it opens as a rendered note.
+- **Open a Markdown/text file** three ways: double‑click it (once Stickmark is set as its *Open with* app), **drag‑drop** it onto any note, or press **`Ctrl+O`** — it opens as a rendered note.
 - **Two‑way sync** — the note *is* the file: your edits are written back to the original `.md`, and if the file changes in another editor the note reloads automatically (with a conflict prompt if you had unsaved edits).
 - **Non‑destructive** — deleting/trashing a linked note only removes the note; the **original file is never deleted**. Re‑opening the same file reuses the existing note instead of duplicating it.
 - **Safe by design** — reading detects the file's encoding (BOM‑aware); writing is UTF‑8. The file path shows on the header hover tooltip.
@@ -102,16 +84,16 @@ Toggle **✎** on a Markdown note for live‑preview editing — headings, **bol
 - **Settings window** — toggle auto‑start, enable/disable global hotkeys, and **rebind the hotkeys** with a click‑and‑press capture field.
 - **Global hotkeys:** new note and All‑notes list from anywhere, fully configurable (or disabled).
 - **Start with Windows** — optional auto‑start via the current‑user `Run` registry key.
-- **Automatic updates** — on launch (and from the tray's *Check for updates…*) StickyPad checks GitHub Releases and, with your OK, downloads the new build and self‑replaces on restart. Toggle it in Settings.
+- **Automatic updates** — on launch (and from the tray's *Check for updates…*) Stickmark checks GitHub Releases, verifies the installer checksum, and runs the Inno Setup updater on restart. Toggle it in Settings.
 - **Verified updates** — downloaded updates are checked against a published SHA‑256 checksum before they're applied.
 - **Single instance** — launching again just surfaces the running app (and forwards any file passed on the command line to it, so double‑clicking an `.md` opens it in the running instance).
-- **`.md` file association** — StickyPad registers itself (per‑user, no admin) in the Windows *Open with* list for `.md`/`.markdown`, without hijacking your default editor.
-- **Language** — English or Korean UI; follows Windows by default, change it in **Settings** (takes effect after restart).
+- **`.md` file association** — Stickmark registers itself (per‑user, no admin) in the Windows *Open with* list for `.md`/`.markdown`, without hijacking your default editor.
+- **Language** — English UI. The language selector is retained for future localization.
 
 ### Data & backup
 - **Backup export/import** to a portable JSON file (tray menu).
 - **Export notes as text** — dump all active notes to a readable Markdown/`.txt` file (tray menu).
-- **Export from the All‑notes window** — the *내보내기 ▾* button exports the selected notes (or the current filtered list, if nothing is selected) as a single styled **HTML** document, a single **PDF** (rendered via an offscreen WebView2), or **one Markdown file per note** (with YAML front matter) into a folder you choose.
+- **Export from the All‑notes window** — the *Export ▾* button exports the selected notes (or the current filtered list, if nothing is selected) as a single styled **HTML** document, a single **PDF** (rendered via an offscreen WebView2), or **one Markdown file per note** (with YAML front matter) into a folder you choose.
 - **Export/print a single note** — from a note's header **⤓** menu, save the current note as PDF, HTML, or Markdown, or send it to the printer.
 - **Vault (folder of .md)** — export all notes to / import from a folder of round‑trippable Markdown files (tray → Vault).
 - **Recycle Bin** — deleted notes are soft‑deleted, restorable, and permanently purged after 30 days (a cleanup also runs at startup).
@@ -141,35 +123,36 @@ Toggle **✎** on a Markdown note for live‑preview editing — headings, **bol
 ## Getting started
 
 ### Download
-Grab the latest build from the [**Releases**](https://github.com/BaeTab/stickypad_windows/releases) page, unzip, and run `StickyPad.exe`.
+Download the latest **Inno Setup installer** from the [**Releases**](https://github.com/dameng324/stickmark/releases) page and run it.
 
 > ⚠️ Windows may show a SmartScreen "unknown publisher" warning (the app isn't code‑signed). It's safe — see [Install & verify](docs/INSTALL.md) for why and how to check the SHA‑256 checksum.
 
-Requires the **[.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)** (x64) unless you use a self‑contained build (see below). The Markdown/HTML preview uses the **[WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/)** — preinstalled on Windows 11 (and most Windows 10).
+The release installer is self‑contained and does not require a separate .NET runtime. The Markdown preview uses the **[WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/)** — preinstalled on Windows 11 (and most Windows 10).
 
 ### Build from source
 
 **Prerequisites**
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Inno Setup 6](https://jrsoftware.org/isinfo.php) (only needed to build the installer)
 - Windows 10/11 (WPF is Windows‑only)
 
 **Clone & run**
 ```bash
-git clone https://github.com/BaeTab/stickypad_windows.git
-cd stickypad_windows
-dotnet run --project stickypad
+git clone https://github.com/dameng324/stickmark.git
+cd stickmark
+dotnet run --project Stickmark
 ```
 
-**Publish a distributable exe**
-```bash
-# Framework-dependent single file (small; needs the .NET 8 Desktop Runtime)
-dotnet publish stickypad -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o publish/win-x64
+**Build the installer**
+```powershell
+dotnet publish Stickmark -c Release -r win-x64 --self-contained true `
+  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
+  -p:EnableCompressionInSingleFile=true -o publish
 
-# Or fully self-contained (larger; no runtime needed on the target PC)
-dotnet publish stickypad -c Release -r win-x64 -p:PublishSingleFile=true --self-contained true -o publish/win-x64-selfcontained
+iscc /DAppVersion=3.0.0 packaging\Stickmark.iss
 ```
 
-Open `stickypad.sln` in Visual Studio 2022 (17.8+) if you prefer the IDE.
+Open `Stickmark.sln` in Visual Studio 2022 or later if you prefer the IDE.
 
 ## Usage guide
 
@@ -177,42 +160,37 @@ Open `stickypad.sln` in Visual Studio 2022 (17.8+) if you prefer the IDE.
 - **Tag it:** type `#idea`, `#todo`, `#work` anywhere in the body — tags appear in the All‑notes sidebar.
 - **Link notes:** write `[[Project ideas]]`; it becomes a clickable link that opens the note titled "Project ideas".
 - **Find anything:** press `Ctrl+Shift+L`, type in the search box — title, tags, and body are searched with highlights.
-- **Export a batch of notes:** in the All‑notes window, tick the checkbox on each note card you want (selection persists across search/filter, with a "N개 선택됨" count and *전체 선택*/*선택 해제*), then *내보내기 ▾* → **HTML 문서로…**, **PDF로…**, or **노트별 Markdown 파일로…**. With nothing ticked, it exports the currently filtered list instead.
+- **Export a batch of notes:** in the All‑notes window, tick the checkbox on each note card you want (selection persists across search/filter, with a "N selected" count and *select all*/*deselect*), then *Export ▾* → **As HTML document… **, **PDF… **, or **Markdown file for each note… **. With nothing ticked, it exports the currently filtered list instead.
 - **Recolor / pin / fade:** use the note's hover toolbar to switch color, pin it on top, or adjust opacity.
 - **Delete safely:** deleting moves a note to the **Trash** tab; restore it there, or empty the bin. Anything left 30 days is purged automatically.
 - **Back up:** tray menu → *Export backup…* writes a JSON file; *Import backup…* restores it (notes with the same id are overwritten).
 
-### Markdown & HTML modes
+### Markdown preview and editing
 
-Each note can be plain **Text**, **Markdown**, or **HTML**. Pick the mode from the buttons in the note's header:
+Each note opens in the read-only **Eye** state, showing rendered Markdown. There is no separate mode picker and no split editor.
 
-> `T` = Text (rich) · `M` = Markdown · `</>` = HTML · `👁` = Preview / Edit toggle
+> `👁` = show preview · `Pin` = always on top
 
-**Steps to render:**
-1. Click **`M`** (Markdown) or **`</>`** (HTML) to switch the note's mode.
-2. The note becomes a **live split** — **source on top, rendered preview below** — and the preview updates as you type. Drag the divider to resize.
-3. Press **`👁` (Eye)** or **`Ctrl+E`** to expand to a **full‑screen rendered view**, and again to return to the split.
+**How it works:**
+1. The note opens as a rendered Markdown preview.
+2. **Double-click the rendered text** to enter WYSIWYG editing.
+3. Click elsewhere, switch windows, or press **`👁` / `Ctrl+E`** to save and return to the Eye preview.
 
-When you **reopen** a Markdown/HTML note later, it opens in the same live split.
+WYSIWYG editing uses offline CodeMirror 6. The saved content remains plain Markdown source, so Vault `.md` files round-trip cleanly.
 
-- Links in a rendered note open in your **default browser**.
-- The preview is themed to match the note's color.
-- Rendering uses the **WebView2 runtime** (built into Windows 11 and most Windows 10).
-
-> **Pasting:** in Markdown/HTML mode, pasted content is inserted as **plain text automatically**, so your tags and markup are kept exactly as copied (even from a browser or Word).
-
+> **Pasting:** pasted text is handled as plain Markdown by the editor, so markup is not silently converted into rich text.
 ### Open & link a `.md` file from disk
 
-Point StickyPad at a Markdown/text file on your machine and it opens as a **rendered, live‑linked** note:
+Point Stickmark at a Markdown/text file on your machine and it opens as a **rendered, live‑linked** note:
 
 - **Drag‑drop** the `.md` onto any note, **press `Ctrl+O`** / the 📂 header button, or use the tray menu → *Open markdown file…*
-- **Double‑click** from Explorer/desktop: right‑click the file → *Open with* → **StickyPad** (StickyPad registers itself in that list on first run; choose *Always* to make double‑click open it).
+- **Double‑click** from Explorer/desktop: right‑click the file → *Open with* → **Stickmark** (Stickmark registers itself in that list on first run; choose *Always* to make double‑click open it).
 
 Once open:
 
 1. The note shows the **rendered Markdown** first; press **`Ctrl+E`** / the 👁 button to edit the source.
 2. **Your edits are saved back to the original file** automatically (debounced) — the note and the file stay in sync.
-3. If the file is **changed by another program**, the note reloads it. If you had unsaved edits, StickyPad asks whether to keep yours or take the disk version.
+3. If the file is **changed by another program**, the note reloads it. If you had unsaved edits, Stickmark asks whether to keep yours or take the disk version.
 4. **Deleting the note keeps the file.** It only unlinks; your `.md` on disk is untouched.
 
 > The header's hover tooltip shows the linked file's full path. Supported: `.md`, `.markdown`, `.txt`, and similar text files.
@@ -222,21 +200,21 @@ Once open:
 Everything is stored under your local profile:
 
 ```
-%LocalAppData%\StickyPad\
+%LocalAppData%\Stickmark\
 ├─ notes.db         # LiteDB embedded database (all notes + trash)
 ├─ settings.json    # preferences (hotkeys, auto-start, etc.)
 └─ logs\
    └─ app-YYYYMMDD.log   # rolling logs, 7-day retention
 ```
 
-To move StickyPad to a new machine, copy `notes.db` (or use *Export backup…*).
+To move Stickmark to a new machine, copy `notes.db` (or use *Export backup…*).
 
 ## Architecture
 
 A small, layered WPF application using the MVVM pattern and dependency injection.
 
 **Tech stack**
-- **UI:** WPF (.NET 8) + [WPF‑UI](https://github.com/lepoco/wpfui)
+- **UI:** WPF (.NET 10) + [WPF‑UI](https://github.com/lepoco/wpfui)
 - **MVVM:** [CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet)
 - **Host & DI:** `Microsoft.Extensions.Hosting` / `DependencyInjection`
 - **Storage:** [LiteDB](https://www.litedb.org/) (embedded NoSQL)
@@ -247,7 +225,7 @@ A small, layered WPF application using the MVVM pattern and dependency injection
 
 **Project layout**
 ```
-stickypad/
+Stickmark/
 ├─ App.xaml(.cs)        # startup, DI host, single-instance, global hotkeys
 ├─ Models/              # Note, AppSettings, NoteColor/Theme, content format
 ├─ ViewModels/          # NoteViewModel, NotesListViewModel (+ summaries)
@@ -265,20 +243,20 @@ stickypad/
 
 ## Privacy
 
-StickyPad is **local‑first and offline**. There is no account, no network calls, and no analytics. Your notes never leave your machine unless *you* export a backup file.
+Stickmark is **local‑first and offline**. There is no account, no network calls, and no analytics. Your notes never leave your machine unless *you* export a backup file.
 
 ## Roadmap
 
 Ideas under consideration (contributions welcome):
-- Live split preview (edit + rendered side by side)
+- Additional Markdown themes and export styles
 - Image paste / attachments
 - Note grouping and reminders
 - Cloud sync (optional)
 
 ## License
 
-Released under the [MIT License](LICENSE) © 2026 BaeTab. You're free to use, modify, and distribute it — see the LICENSE file for details.
+Released under the [MIT License](LICENSE) © 2026 BaeTab and Stickmark contributors. You're free to use, modify, and distribute it — see the LICENSE file for details.
 
 ## Acknowledgements
 
-Thanks to the maintainers of WPF‑UI, CommunityToolkit.Mvvm, LiteDB, Serilog, H.NotifyIcon, and NHotkey — StickyPad stands on their shoulders.
+Thanks to the maintainers of WPF‑UI, CommunityToolkit.Mvvm, LiteDB, Serilog, H.NotifyIcon, and NHotkey — Stickmark stands on their shoulders.

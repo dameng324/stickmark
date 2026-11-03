@@ -1,9 +1,9 @@
 {
-  "name": "stickypad-mdeditor",
+  "name": "stickmark-mdeditor",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "StickyPad WYSIWYG markdown editor bundle (CodeMirror 6, offline)",
+  "description": "Stickmark WYSIWYG markdown editor bundle (CodeMirror 6, offline)",
   "scripts": {
     "build": "node build.mjs",
     "test": "node --test test.mjs"

@@ -1,58 +1,58 @@
-# StickyPad 2.0 로드맵
+# Stickmark 2.0 Roadmap
 
-1.x 는 기존 기능 위에 얹는 증분(내보내기, 다국어, 템플릿, 일괄 작업 등)이었다면, **2.0은 기능 추가가 아니라 앱의 정체성을 재정의하는 헤드라인 변화 + 그것을 떠받치는 기반공사**다.
+If 1.x was an increment on top of existing features (export, multiple languages, templates, batch operations, etc.), **2.0 is not an addition of features, but a headline change that redefines the identity of the app + the foundation construction that supports it**.
 
-## 헤드라인: 볼트 & 동기화
+## Headline: Vault & Sync
 
-모든 노트를 폴더 안의 개별 `.md` 파일로 두는 **"볼트(Vault)" 모드**가 핵심이다. 이미 있는 "디스크 `.md` 파일 열기·양방향 연동" 기능을 노트 하나가 아니라 **앱 전체**로 확장하는 셈이다 — LiteDB는 인덱스/캐시 역할로 남고, 진실의 원천은 사람이 읽을 수 있는 `.md` 파일들이 된다.
+The key is the **"Vault" mode**, which places all notes as individual `.md` files in a folder. This extends the already existing “disk `.md` file opening/two-way linkage” feature to **the entire app** rather than just a single note — LiteDB remains in the index/cache role, and the source of truth becomes human-readable `.md` files.
 
-이렇게 하면 노트 폴더를 **클라우드 동기화 폴더(OneDrive, Dropbox 등)나 Git 저장소**에 두는 것만으로 여러 기기 간 동기화가 가능해진다. 물론 여러 기기에서 같은 파일을 건드리면 충돌이 생기므로 **충돌 해결 UI**가 필요하다.
+This allows you to sync your notes folders across multiple devices simply by placing them in a cloud sync folder (OneDrive, Dropbox, etc.) or a Git repository. Of course, if you touch the same file on multiple devices, a conflict will occur, so a **conflict resolution UI** is needed.
 
-무엇을 하든 StickyPad의 핵심 DNA — **local-first, 계정 없음** — 는 유지한다. 클라우드 동기화는 사용자가 스스로 붙이는 폴더일 뿐, StickyPad 서버는 존재하지 않는다.
+No matter what we do, Stickmark's core DNA — **local-first, no account** — remains. Cloud synchronization is just a folder that users add themselves; there is no Stickmark server.
 
-후보로 고려 중인 대안/확장(2.0 필수는 아님):
-- 모바일 컴패니언 앱(같은 볼트 폴더를 읽는 뷰어/편집기)
-- 리마인더 · 태스크 관리로의 확장
+Alternatives/extensions being considered as candidates (not required for 2.0):
+- Mobile companion app (viewer/editor that reads the same vault folder)
+- Expansion into reminder and task management
 
-## 기반공사
+## Infrastructure construction
 
-2.0 헤드라인을 지탱하기 위해 먼저 다져야 할 기반들.
+The foundations that must be laid first to support the 2.0 headline.
 
-### 1. 데이터 모델 · 마이그레이션
+### 1. Data model · Migration
 
-**✅ 착수됨.** `SchemaMigrator`(`stickypad/Services/SchemaMigrator.cs`)가 LiteDB의 내장 `UserVersion` 을 기준으로 순차 마이그레이션(v1→v2→…) 기반을 마련했다. 앱이 기대하는 스키마 버전(`CurrentVersion`)과 실제 DB 버전이 다르면 등록된 마이그레이션을 하나씩 적용하고, DB가 앱보다 최신(다운그레이드 상황)이면 손대지 않고 안전하게 넘어간다.
+**✅ Initiated.** `SchemaMigrator` (`Stickmark/Services/SchemaMigrator.cs`) has established the basis for sequential migration (v1→v2→…) based on LiteDB’s built-in `UserVersion`. If the schema version (`CurrentVersion`) expected by the app is different from the actual DB version, registered migrations are applied one by one, and if the DB is newer than the app (downgrade situation), it safely moves on without touching it.
 
-앞으로 필요한 것:
-- Note ↔ `.md` 파일 라운드트립(프런트매터로 메타데이터 보존)
-- 여러 기기/파일 시스템에서도 안정적인 노트 ID 체계
-- 동기화 시 병합(merge) 규칙 — 마지막 수정 우선(LWW)만으로는 부족한 충돌 케이스 정의
+What you need next:
+- Note ↔ `.md` file round trip (metadata preserved with frontmatter)
+- Stable note ID system across multiple devices/file systems
+- Merge rules when synchronizing — define conflict cases where last modification first (LWW) alone is not enough
 
-### 2. 신뢰 · 배포
+### 2. Trust · Distribution
 
-코드서명(EV 인증서 + HSM)은 비용이 크므로 **2.0의 필수 조건이 아니며 별도 트랙으로 분리**한다. 대신 무료/저비용 대안부터:
-- **winget 매니페스트** (무료) — `winget install`로 설치 가능하게 하여 SmartScreen 최초 실행 경고 노출 빈도를 줄인다.
-- **SmartScreen 안내 문서** — [`docs/INSTALL.md`](INSTALL.md)에 왜 경고가 뜨는지, 왜 안전한지, 해시로 직접 검증하는 법을 정리해 이미 제공 중이다.
-- 나중에 필요하면 **Microsoft Store(MSIX) 배포** — 개인 개발자 등록비 약 $19(1회)로 스토어 서명이 적용되어 SmartScreen 경고 자체가 사라진다.
+Code signing (EV certificate + HSM) is expensive, so it is not a requirement for **2.0 and is separated into a separate track**. Instead, start with free/low-cost alternatives:
+- **winget manifest** (free) — Reduces the frequency of SmartScreen first-run warnings by enabling installation with `winget install`.
+- **SmartScreen guidance document** — In [`docs/INSTALL.md`](INSTALL.md), a summary of why a warning appears, why it is safe, and how to directly verify it with a hash is already provided.
+- If needed later, **Microsoft Store (MSIX) deployment** — For an individual developer registration fee of approximately $19 (one-time), store signature is applied and the SmartScreen warning itself disappears.
 
-업데이트 무결성(다운로드 exe의 SHA-256 체크섬 검증)은 **이미 완료**되어 있다(v1.7.0).
+Update integrity (SHA-256 checksum verification of download exe) is **already completed** (v1.7.0).
 
-### 3. 품질
+### 3. Quality
 
-- VM/통합 테스트 확대 (`SchemaMigrator` 단위 테스트가 시작점)
-- (옵트인) 크래시 리포트 수집
-- 접근성(키보드 내비게이션, 스크린리더 라벨) 점검
+- Expanded VM/integration testing (`SchemaMigrator` unit test is the starting point)
+- (Opt-in) Crash report collection
+- Check accessibility (keyboard navigation, screen reader labels)
 
-### 4. 암호화 (선택)
+### 4. Encryption (optional)
 
-볼트 전체 또는 노트 단위 암호화 — 클라우드 폴더에 평문 `.md` 를 두는 것이 부담스러운 사용자를 위한 옵션.
+Encrypt entire vault or note-by-note — an option for users who find it burdensome to have plain text `.md` in their cloud folders.
 
-### 5. 성능
+### 5. Performance
 
-노트 수천 개 규모에서도 목록/검색이 매끄럽도록 UI 가상화 및 인덱싱 최적화.
+Optimized UI virtualization and indexing to ensure smooth listing/search even at scale of thousands of notes.
 
-## 단계
+## steps
 
-1. **1.x 준비** — 스키마 마이그레이터 ✅, 그 외 리마인더·다크모드 등 통상적인 증분 기능들.
-2. **2.0-alpha** — 볼트 모드 도입, Note ↔ `.md` 라운드트립 구현.
-3. **2.0-beta** — 클라우드 폴더/Git 동기화 + 충돌 해결 UI, (선택) 암호화.
-4. **2.0 정식** — 기존 1.x DB → 볼트 자동 마이그레이션 마법사, 문서 전면 개정, winget/Store 배포.
+1. **Preparation for 1.x** — Schema Migrator ✅, other typical incremental features such as reminders and dark mode.
+2. **2.0-alpha** — Introduced bolt mode, implemented Note ↔ `.md` round trip.
+3. **2.0-beta** — Cloud Folders/Git sync + conflict resolution UI, (optional) encryption.
+4. **2.0 official** — Existing 1.x DB → Vault automatic migration wizard, complete document revision, winget/Store distribution.

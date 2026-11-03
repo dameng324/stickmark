@@ -45,3 +45,6 @@ logs/
 *.keystore
 keystore.properties
 signing.properties
+
+# ---- Packaging output ----
+artifacts/

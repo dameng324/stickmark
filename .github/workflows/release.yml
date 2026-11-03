@@ -15,28 +15,37 @@ jobs:
 
       - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
-      # 테스트가 통과해야만 릴리즈를 배포한다(실패 빌드가 태그로 나가는 것을 막음).
+      # Publish only when the test suite passes.
       - name: Test
-        run: dotnet test stickypad.Tests/stickypad.Tests.csproj -c Release --verbosity normal
+        run: dotnet test Stickmark.Tests/Stickmark.Tests.csproj -c Release --verbosity normal
 
-      - name: Publish self-contained single-file exe
+      - name: Publish self-contained single-file application
         shell: pwsh
         run: |
-          dotnet publish stickypad/stickypad.csproj -c Release -r win-x64 --self-contained true `
+          dotnet publish Stickmark/Stickmark.csproj -c Release -r win-x64 --self-contained true `
             -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
             -p:EnableCompressionInSingleFile=true -o publish
-          Copy-Item publish/StickyPad.exe "StickyPad-${{ github.ref_name }}-win-x64.exe"
-          # 무결성 검증용 SHA-256 체크섬 자산 ("<hash>  <filename>" 형식).
-          $exe = "StickyPad-${{ github.ref_name }}-win-x64.exe"
-          $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLower()
-          "$hash  $exe" | Out-File -Encoding ascii "$exe.sha256"
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+
+      - name: Build Inno Setup installer
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v', 'V')
+          & iscc "/DAppVersion=$version" "packaging\Stickmark.iss"
+          $setup = "artifacts/installer/Stickmark-$version-win-x64-setup.exe"
+          if (!(Test-Path $setup)) { throw "Installer was not created: $setup" }
+          $hash = (Get-FileHash $setup -Algorithm SHA256).Hash.ToLower()
+          "$hash  $(Split-Path -Leaf $setup)" | Out-File -Encoding ascii "$setup.sha256"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3
         with:
           files: |
-            StickyPad-*-win-x64.exe
-            StickyPad-*-win-x64.exe.sha256
+            artifacts/installer/Stickmark-*-win-x64-setup.exe
+            artifacts/installer/Stickmark-*-win-x64-setup.exe.sha256
           generate_release_notes: true

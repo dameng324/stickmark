@@ -1,170 +1,170 @@
-# StickyPad 로드맵 아이디어 (2026-07-06 기준, v2.2.2)
+# Stickmark Roadmap Ideas (as of 2026-07-06, v2.2.2)
 
-기능 추가 · 보완/개선 · UI/UX 고도화 후보를 한곳에 정리한다.
-표기: ⭐ 추천(가치/노력 대비 우수) · 🔥 임팩트 큼 · 🧪 검증 필요(리스크) · 🎈 가벼움(반나절 이하)
-
----
-
-## 1. 기능 추가
-
-### 1.1 콘텐츠 강화
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐🔥 이미지/첨부 붙여넣기 | 노트에 이미지 붙여넣기 → 볼트 `./attachments/` 저장 + `![](...)` 삽입 | 노트 앱의 큰 빈칸, Obsidian 호환 |
-| 표 편집 도우미 | 표 삽입·행/열 추가 버튼 (현재 표는 소스로만) | WYSIWYG 후속 |
-| 🎈 코드블록 구문 강조 | 미리보기의 ```lang 블록 하이라이트 | Markdig 확장 |
-| 수식·다이어그램 | KaTeX(수식)·Mermaid(플로우차트) 오프라인 렌더 | 파워유저 대상 |
-| 손그림 노트 | 자유 캔버스 스케치 노트 유형 | 규모 큼 |
-
-### 1.2 WYSIWYG 완성도 (v2.1~2.2 이어서)
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐ 클릭 가능한 체크박스 | `- [ ]` 를 클릭으로 토글 (현재는 텍스트) | 편집기/미리보기 양쪽 |
-| `/` 슬래시 명령 | `/` 입력 시 제목·목록·표·코드 삽입 메뉴 (Notion식) | CM6 자동완성 |
-| ⭐🎈 리스트 자동 이어쓰기 | 목록에서 Enter → 다음 항목 자동, 빈 항목이면 해제 | 체감 큼 |
-
-### 1.3 탐색 · 연결
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐🔥 빠른 전환기 (Ctrl+P) | 제목 퍼지 검색으로 노트 즉시 점프 | 노트 많을수록 필수 |
-| 백링크 패널 | "이 노트를 링크한 노트" 목록 (기존 `[[제목]]` 활용) | |
-| 태그 관리 | 태그 이름 변경·병합 | |
-| 폴더/노트북 | 노트 그룹화 | 데이터 모델 변경(스키마 마이그레이터 활용) |
-
-### 1.4 할 일 · 시간
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐🔥 통합 할 일 뷰 | 모든 노트의 `- [ ]` 를 한 화면에 모아 보기/체크 | 기존 체크박스 재활용 |
-| 알림/마감일 | 노트에 날짜 지정 → 트레이 알림 | 로컬 스케줄링 |
-| 날짜 토큰 어젠다 | 본문 `@2026-07-10` 인식 → 다가오는 일정 목록 | |
-| 데일리 노트/저널 | 하루 한 장 자동 생성 + 날짜 캘린더 뷰 | 습관 형성(리텐션) |
-
-### 1.5 캡처 · 입력
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐🔥 전역 빠른 캡처 | 어디서든 단축키 → 미니 입력창 → 새 노트(선택 텍스트/클립보드 자동) | 사용 빈도 폭발 |
-| 화면 영역 캡처 | 드래그로 화면 일부 → 이미지 노트 | 이미지 붙여넣기 선행 필요 |
-| 🎈 트레이 드롭 | 텍스트·파일을 트레이 아이콘에 드롭 → 노트 생성 | |
-
-### 1.6 공유 · 상호운용
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| 🎈 서식 있는 복사 | 노트를 리치텍스트/HTML로 복사(이메일·워드에 서식 유지) | |
-| 단일 HTML 내보내기 | 전체 노트를 자기완결 HTML 한 장으로 | |
-| 🎈 Obsidian/VS Code로 열기 | 볼트 폴더를 외부 도구로 여는 버튼 | |
-| 노트를 이미지로 공유 | 노트를 스티키 카드 PNG로 (SNS·메신저) | 재미 요소와 결합 |
-| QR로 폰에 전송 | 노트 내용을 QR로 표시 | |
-| LAN 피어 동기화 | 같은 네트워크 PC 간 직접 동기화 | 규모 큼, 클라우드 폴더로 대체 가능 |
-
-### 1.7 맥락 인지
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| 앱 연동 표시 | 특정 앱 활성 시에만 뜨는 노트(코딩 치트시트 등) | 차별화 포인트 |
-| 🎈 액티브 모니터 따라오기 | 새 노트를 현재 보는 모니터에 생성 | |
-| 🎈 키보드 노트 순환 | 단축키로 열린 노트 포커스 이동 | |
-
-### 1.8 신뢰 · 데이터
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| 잠금 노트(암호화) | 특정 노트 로컬 암호화 | 프라이버시 강점 강화 |
-| 버전 히스토리 | 볼트를 git 저장소로 자동 커밋 → 이력/복원 | 볼트 모드 시너지 |
-| 자동 백업 스케줄 | 주기 백업 + 보관 개수 관리 | |
-| 🎈 읽기 전용 잠금 | 실수 편집 방지(암호화보다 가벼움) | |
-| 중복 노트 감지 | 비슷한 노트 알림/병합 | |
-
-### 1.9 재미 · 감성
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| 🎈 완료 폭죽 | 마지막 할 일 체크 시 confetti | |
-| 구겨서 던지기 삭제 | 삭제 시 종이공으로 구겨져 날아감 | |
-| 노트 노화 | 오래 안 건드린 노트가 누렇게 바램 | 은근 유용(방치 감지) |
-| 워시테이프/스킨 | 마스킹테이프 장식, 종이 질감, 시즌 연출 | |
-| 카운트다운 노트 | D-day 플립 시계 | |
-| 사운드 | 종이 넘김·펜 사각임 효과음(토글) | |
+Organize candidates for feature addition, supplementation/improvement, and UI/UX advancement in one place.
+Notation: ⭐ Recommended (excellent value/effort ratio) · 🔥 High impact · 🧪 Requires verification (risk) · 🎈 Light (less than half a day)
 
 ---
 
-## 2. 보완 · 개선 (엔지니어링)
+## 1. Add features
 
-### 2.1 성능 (v2.2.2에서 측정 완료)
-- 측정 결과: 앱 자체 ~31MB(가벼움), 메모리 주범은 노트당 WebView2 렌더러(30–60MB), 다운로드 76MB는 자체포함 .NET 런타임.
-- ✅ 완료: 숨긴 노트 WebView2 `MemoryUsageTargetLevel=Low` (v2.2.2)
-- 🧪 **대량 노트 지연 복원** — 시작 시 전 노트 창 생성 대신, 숨긴 노트는 필요할 때 생성. 효과 크지만 창 생명주기 변경 → 하네스 대량 검증 필수.
-- 🧪 **다운로드 경량화** — 프레임워크 의존 배포(76MB→~2MB). 사용자가 .NET 8 런타임 설치 필요 → InnoSetup 런타임 확인 로직과 결합해야 함. 배포 방식 결정 필요.
-- WebView2 환경 공유 검토 — 노트 간 UDF/환경 공유로 브라우저 프로세스 수 절감(이미 UDF는 공유 중, 환경 객체 명시 공유 검토).
+### 1.1 Content Enhancement
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐🔥 Paste Image/Attachment | Paste image into note → Save bolt `./attachments/` + insert `![](...)` | Large blank space in Notes app, Obsidian compatible |
+| Table Editing Assistant | Insert table/Add row/column button (current table is only source) | WYSIWYG follow-up |
+| 🎈 Code block syntax highlighting | Highlighting the ```lang block in the preview | Markdig extension |
+| Formulas/Diagrams | KaTeX (formula)·Mermaid (flowchart) offline render | For power users |
+| Hand-drawn notes | Free Canvas Sketch Note Type | Large scale |
 
-### 2.2 배포 · 신뢰
-- 🔥 **코드서명** — SmartScreen "알 수 없는 게시자" 해소. MS Store($19 1회) 또는 Azure Trusted Signing(월 소액). *(사용자 결정 대기)*
-- **winget 매니페스트 갱신 자동화** — `packaging/winget/1.7.0` 이후 미갱신(현재 2.2.2). 릴리즈 CI에서 매니페스트 자동 생성/PR까지.
-- InnoSetup 설치본 — 단일 exe 외 설치형 선택지(+시작 메뉴/제거 지원). 경량화(프레임워크 의존)와 자연 결합.
-- 업데이트 UX — 현재 다운로드+SHA-256 검증. 다운로드 후 자동 실행/적용 단계 개선 여지.
+### 1.2 WYSIWYG completeness (continued from v2.1~2.2)
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐ Clickable checkbox | `-[ ]` toggle by clicking (currently text) | Editor/Preview Both |
+| `/` slash command | When entering `/`, insert title, list, table, and code menu (Notion style) | CM6 autocomplete |
+| ⭐🎈 Automatic continuation of list | Enter in list → Auto next item, turn off if empty item | Feels great |
 
-### 2.3 볼트 모드 후속
-- 🔥 **실시간 폴더 감시** — 외부 변경 자동 반영(현재 재시작 필요, v2.1 계획분). FileSystemWatcher + 디바운스 + 충돌 정책.
-- 볼트 충돌 처리 — 클라우드 충돌 사본(`-conflict`) 감지·안내.
-- 볼트 상태 표시 — 트레이/목록에 현재 저장소 모드·볼트 경로 표시.
+### 1.3 Navigation · Connection
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐🔥 Quick Switcher (Ctrl+P) | Jump to notes instantly with title fuzzy search | The more notes, the more essential |
+| Backlink Panel | "Notes linked to this note" list (using the existing `[[Title]]`) | |
+| Tag Management | Change/merge tag names | |
+| Folder/Notebook | Group notes | Change data model (using schema migrator) |
 
-### 2.4 테스트 · 진단
-- UI 자동 스모크 — 데모 하네스(격리 DB·별도 뮤텍스)를 CI용 자동 스모크로 승격(단일 파일 publish 검증 포함, 2.1.0 회귀 교훈).
-- 대량 노트 부하 테스트 — 노트 500~1000개 시나리오.
-- 진단 내보내기 — 로그+환경 요약 zip 한 번에(이슈 제보용).
+### 1.4 Things to do · Time
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐🔥 Integrated to-do view | View/check `- [ ]` of all notes on one screen | Recycle existing checkboxes |
+| Reminder/Due Date | Assign date to note → Tray notification | Local Scheduling |
+| Date Token Agenda | Body `@2026-07-10` recognition → Upcoming schedule list | |
+| Daily Note/Journal | Automatic creation of one photo per day + date calendar view | Habit formation (retention) |
 
-### 2.5 접근성 · 국제화 후속
-- 키보드 전용 내비게이션 점검(탭 순서·포커스 표시), 고대비 테마 대응.
-- 다국어 확장(일본어 등) — resx 구조는 준비됨.
+### 1.5 Capture · Input
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐🔥 Global fast capture | Shortcut anywhere → Mini input window → New note (automatic selection text/clipboard) | Explosion in usage frequency |
+| Capture screen area | Drag part of the screen → Image note | Prerequisite for pasting images |
+| 🎈 Tray Drop | Drop text/file into tray icon → Create note | |
 
-### 2.6 보안 후속 (docs/SECURITY-REVIEW.md 권장사항)
-- 임시 파일 즉시 정리·시작 시 청소.
-- 가져오기(백업/볼트) 크기·개수 상한.
-- 라이브 미리보기 원격 이미지 옵트인.
+### 1.6 Sharing · Interoperability
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| 🎈 Rich Copy | Copy notes as rich text/HTML (maintain formatting in email/Word) | |
+| Single HTML export | Entire note in one self-contained HTML sheet | |
+| 🎈 Open with Obsidian/VS Code | Button to open vault folder with external tool | |
+| Share notes as images | Convert notes to Sticky Card PNG (SNS/Messenger) | Combined with fun elements |
+| Transfer to phone with QR | Display note contents as QR | |
+| LAN peer synchronization | Direct synchronization between PCs on the same network | Large scale, can be replaced with cloud folders |
+
+### 1.7 Context awareness
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| App linkage display | Notes (coding cheat sheets, etc.) that appear only when a specific app is activated | Point of differentiation |
+| 🎈 Follow Active Monitor | Create a new note on the current monitor | |
+| 🎈 Keyboard note cycling | Move the focus of an open note with a shortcut key | |
+
+### 1.8 Trust · Data
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| Lock Note (Encrypted) | Local encryption of specific notes | Strengthening privacy strengths |
+| Version History | Automatically commit the vault to the git repository → History/Restore | Vault Mode Synergy |
+| Automatic backup schedule | Periodic backup + storage count management | |
+| 🎈 Read-only lock | Avoid accidental editing (lighter than encryption) | |
+| Duplicate note detection | Notify/merge similar notes | |
+
+### 1.9 Fun · Emotion
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| 🎈 Completed Firecracker | confetti when checking the last to-do | |
+| Crumple and Throw Delete | When deleted, it crumbles into a paper ball and flies away | |
+| Note Aging | Notebooks that haven't been touched in a long time are turning yellow | Subtly useful (neglect detection) |
+| Wash Tape/Skin | Masking tape decoration, paper texture, seasonal direction | |
+| Countdown Note | D-day flip clock | |
+| sound | Paper flipping/pen square sound effect (toggle) | |
 
 ---
 
-## 3. UI/UX 고도화
+## 2. Supplementation/improvement (Engineering)
 
-### 3.1 외형 · 테마
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐🔥 앱 전체 다크 테마 | 목록·설정 등 앱 크롬까지 다크(현재 노트 색만) | 요청 많은 기본기 |
-| Windows 11 스타일 | Mica 배경·둥근 모서리·스냅 레이아웃 대응 | WPF-UI 패키지 이미 참조 중 |
-| 노트 폰트 선택 | 노트별 글꼴(손글씨체 포함)·크기 프리셋 | |
-| 그리드 스냅 | 노트 이동 시 정렬 스냅 | 🎈 |
+### 2.1 Performance (Measured on v2.2.2)
+- Measurement results: The app itself is ~31MB (light), the main memory culprit is the WebView2 renderer (30–60MB) per note, and the 76MB download is the self-contained .NET runtime.
+- ✅ Completed: Hidden Notes WebView2 `MemoryUsageTargetLevel=Low` (v2.2.2)
+- 🧪 **Delayed restoration of bulk notes** — Instead of creating the previous notes window at startup, hidden notes are created when needed. The effect is great, but it changes the window life cycle → requires mass verification of harness.
+- 🧪 **Download Lighter** — Framework-dependent deployment (76MB→~2MB). Requires user to install the .NET 10 runtime → Must be combined with InnoSetup runtime verification logic. Need to decide on distribution method.
+- Review of WebView2 environment sharing — Reduce the number of browser processes by sharing UDF/environment between notes (UDF is already being shared, review explicit sharing of environment objects).
 
-### 3.2 노트 창 UX
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐ 노트 말아올리기 | 헤더 더블클릭 → 제목바만 남기고 접기 | 화면 정리, 🎈 |
-| 제목 인라인 편집 | 헤더의 제목을 클릭해 바로 수정(현재 본문 첫 줄 유도) | |
-| 가장자리 도킹 | 화면 끝에 붙이면 슬라이드 숨김/호버 표시 | |
-| 데스크톱 위젯 모드 | 배경 고정 + 클릭-스루 | 스티키 정체성 🔥 |
-| 크기 프리셋 | 소/중/대 원클릭 | 🎈 |
+### 2.2 Distribution · Trust
+- 🔥 **Code Signing** — SmartScreen “unknown publisher” resolution. MS Store ($19 one-time) or Azure Trusted Signing (small monthly fee). *(Wait for user decision)*
+- **Automated winget manifest updates** — Not updated since `packaging/winget/1.7.0` (currently 2.2.2). From release CI to automatic manifest generation/PR.
+- InnoSetup installation version — Installation option other than single exe (+ Start menu/uninstallation support). Lightweight (framework dependency) and natural combination.
+- Updated UX — Current download + SHA-256 verification. Room for improvement in auto-run/apply steps after download.
 
-### 3.3 목록 창 UX
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| 미리보기 패널 | 목록에서 선택 시 우측 렌더 미리보기 | |
-| 정렬 옵션 | 수정순 외 생성순/제목순/색상별 | 🎈 |
-| 핀보드 뷰 | 코르크보드처럼 배치·드래그 정렬 | |
-| 목록 가상화 | 수백 노트에서 스크롤 성능 | 2.1 성능과 연결 |
+### 2.3 Vault Mode Sequel
+- 🔥 **Real-time folder monitoring** — Automatic reflection of external changes (currently requires restart, planned for v2.1). FileSystemWatcher + Debounce + Conflict Policy.
+- Vault conflict handling — Cloud conflict copy (`-conflict`) detection and notification.
+- Show vault status — Show current storage mode/vault path in tray/list.
 
-### 3.4 온보딩 · 도움
-| 아이디어 | 설명 | 비고 |
-| --- | --- | --- |
-| ⭐ 첫 실행 투어 | 샘플 노트 3장으로 기능 소개(모드·태그·볼트) | 신규 사용자 이탈 방지 |
-| What's New | 업데이트 후 새 기능 하이라이트 1회 표시 | 🎈 CHANGELOG 재활용 |
-| 단축키 치트시트 | `?` 또는 트레이에서 단축키 한眼표 | 🎈 |
+### 2.4 Testing/Diagnosis
+- UI auto-smoke — Promote demo harness (isolated DB/separate mutex) to auto-smoke for CI (including single file publish validation, 2.1.0 regression lesson learned).
+- Bulk note load testing — 500-1000 note scenarios.
+- Export diagnostics — log + environment summary zip at once (for reporting issues).
 
-### 3.5 정리 · 잔손질
-- 트레이 메뉴 그룹화(항목이 많아짐 — 백업/볼트/도구 서브메뉴로).
-- 설정 창 탭 구조화(일반/단축키/저장소/정보) + 정보 탭에 버전·링크.
-- 노트 삭제 확인 다이얼로그의 소유자·포커스 일관성(2.0.1 DialogOwner 후속 점검).
+### 2.5 Accessibility / Internationalization follow-up
+- Keyboard-only navigation overhaul (tab order and focus display), high-contrast theme support.
+- Multilingual expansion (Japanese, etc.) — resx structure is ready.
+
+### 2.6 Security Follow-up (recommended docs/SECURITY-REVIEW.md)
+- Instantly organize temporary files and clean them at startup.
+- Import (backup/vault) size and number upper limit.
+- Opt-in for live preview remote images.
 
 ---
 
-## 4. 추천 다음 스텝 (조합 제안)
+## 3. UI/UX advancement
 
-1. **"에디터 한 뼘 더"** — 리스트 자동 이어쓰기 + 클릭 체크박스 + 코드 하이라이트 (WYSIWYG 체감 완성)
-2. **"허브로 진화"** — 통합 할 일 뷰 + 빠른 전환기(Ctrl+P) (노트가 많아진 사용자 잡기)
-3. **"첫인상"** — 앱 전체 다크 테마 + 첫 실행 투어 + What's New (신규/복귀 사용자)
-4. **"캡처 머신"** — 전역 빠른 캡처 + 트레이 드롭 + 이미지 붙여넣기 (수집 도구화)
-5. **"볼트 완성"** — 실시간 폴더 감시 + 충돌 안내 + Obsidian으로 열기 (2.x 간판 기능 마무리)
+### 3.1 Appearance · Theme
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐🔥 App-wide dark theme | Lists, settings, etc. Even app chrome is dark (current note color only) | Most requested basics |
+| Windows 11 Style | Mica background, rounded corners, and snap layout support | WPF-UI package already referenced |
+| Select note font | Font (including handwriting) and size presets for each note | |
+| grid snap | Snap alignment when moving notes | 🎈 |
+
+### 3.2 Note Window UX
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐ Roll up notes | Double-click the header → Collapse leaving only the title bar | Clean up your screen, 🎈 |
+| Title inline editing | Click on the title of the header to edit it immediately (leading to the first line of the current body) | |
+| edge docking | Hide slide/show hover when attached to the end of the screen | |
+| Desktop widget mode | Freeze background + click-through | Sticky Identity 🔥 |
+| size preset | Small/Medium/Large One Click | 🎈 |
+
+### 3.3 List window UX
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| Preview panel | Preview the render on the right when selecting from the list | |
+| Sort Options | In addition to the order of modification, order of creation/title/color | 🎈 |
+| Pinboard view | Placement/drag arrangement like a corkboard | |
+| list virtualization | Scrolling Performance at Hundreds of Notes | 2.1 Performance and connectivity |
+
+### 3.4 Onboarding · Help
+| Idea | Description | Remarks |
+| --- | --- | --- |
+| ⭐ First Run Tour | Function introduction with 3 sample notes (mode, tag, bolt) | Preventing new user churn |
+| What's New | Show new feature highlights after update 1 time | 🎈 CHANGELOG Recycle |
+| Shortcut Cheat Sheet | `?` or shortcut key in tray | 🎈 |
+
+### 3.5 Cleanup · Minor touches
+- Tray menu grouping (more items — into Backup/Vault/Tools submenus).
+- Settings window tab structure (General/Shortcuts/Storage/Information) + Version/link in the Information tab.
+- Owner/focus consistency of note deletion confirmation dialog (2.0.1 DialogOwner follow-up inspection).
+
+---
+
+## 4. Recommended next step (suggest combination)
+
+1. **"One more inch of editor"** — Automatically concatenate list + click checkbox + code highlight (complete WYSIWYG experience)
+2. **"Evolved into a hub"** — Unified to-do view + quick switcher (Ctrl+P) (catches users with more notes)
+3. **"First Impressions"** — App-wide dark theme + First-run tour + What's New (new/returning users)
+4. **"Capture Machine"** — Global Quick Capture + Tray Drop + Paste Image (Toolize Collection)
+5. **"Vault Completion"** — Real-time folder monitoring + conflict notification + opening with Obsidian (finalizing 2.x Kanban features)

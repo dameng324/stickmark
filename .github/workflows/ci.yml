@@ -14,7 +14,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore
         run: dotnet restore
@@ -23,10 +23,9 @@ jobs:
         run: dotnet build -c Release --no-restore
 
       - name: Test
-        run: dotnet test stickypad.Tests/stickypad.Tests.csproj -c Release --no-build --verbosity normal
+        run: dotnet test Stickmark.Tests/Stickmark.Tests.csproj -c Release --no-build --verbosity normal
 
-  # WYSIWYG 에디터 번들(CodeMirror 6)이 소스와 어긋나지 않는지 검증 —
-  # 핀 고정된 의존성(package-lock)으로 재빌드해 커밋된 자산과 대조(EOL 차이는 무시).
+  # Verify that the committed CodeMirror editor bundle matches the source.
   editor-bundle:
     runs-on: windows-latest
     steps:
@@ -43,8 +42,8 @@ jobs:
           npm ci
           npm test
           npm run build
-          if ! diff --strip-trailing-cr -q dist/mdeditor.bundle.js ../../stickypad/Assets/mdeditor/mdeditor.bundle.js; then
-            echo "::error::Editor bundle is out of date. Run 'npm run build' in tools/mdeditor and copy dist/mdeditor.bundle.js to stickypad/Assets/mdeditor/."
+          if ! diff --strip-trailing-cr -q dist/mdeditor.bundle.js ../../Stickmark/Assets/mdeditor/mdeditor.bundle.js; then
+            echo "::error::Editor bundle is out of date. Run 'npm run build' in tools/mdeditor and copy dist/mdeditor.bundle.js to Stickmark/Assets/mdeditor/."
             exit 1
           fi
           echo "Editor bundle is up to date."
