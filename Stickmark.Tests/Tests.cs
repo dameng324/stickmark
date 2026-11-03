@@ -306,7 +306,7 @@ public class VaultStoreTests
             {
                 Id = Guid.NewGuid(), Title = "Meeting", Content = "# Meeting\n\n- x",
                 Format = NoteContentFormat.Markdown, Color = NoteColor.Blue, Tags = new() { "Work" },
-                X = 120, Y = 240, Width = 360, Height = 300, Opacity = 0.8, IsAlwaysOnTop = true,
+                X = 120, Y = 240, Width = 360, Height = 300, Opacity = 0.8, IsAlwaysOnTop = true, ZoomFactor = 1.35,
                 CreatedAt = new DateTime(2026, 7, 1, 0, 0, 0, DateTimeKind.Utc),
                 ModifiedAt = new DateTime(2026, 7, 5, 0, 0, 0, DateTimeKind.Utc),
             };
@@ -328,6 +328,7 @@ public class VaultStoreTests
             Assert.Equal(360.0, a.Width);
             Assert.Equal(0.8, a.Opacity, 6);
             Assert.True(a.IsAlwaysOnTop);
+            Assert.Equal(1.35, a.ZoomFactor, 6);
             Assert.False(a.IsDeleted);
             Assert.True(t.IsDeleted);                       // round trip to trash can state
             Assert.Equal(trashed.DeletedAt, t.DeletedAt);

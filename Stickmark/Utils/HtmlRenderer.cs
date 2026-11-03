@@ -55,9 +55,10 @@ public static class HtmlRenderer
             "style-src 'unsafe-inline'; font-src data: https:;\">" +
             "<meta name=\"color-scheme\" content=\"light dark\">" +
             "<style>" +
-            $"html,body{{margin:0;padding:10px 12px;background:{bg};color:{fg};" +
+            $"html,body{{margin:0;padding:6px 12px 10px;background:{bg};color:{fg};" +
             "font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.55;" +
             "word-wrap:break-word;overflow-wrap:break-word;}" +
+            "body>:first-child{margin-top:0;}" +
             "a{color:#1565C0;}" +
             "code{background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:3px;font-family:Consolas,'Cascadia Mono',monospace;}" +
             "pre{background:rgba(0,0,0,0.06);padding:8px 10px;border-radius:6px;overflow:auto;}" +

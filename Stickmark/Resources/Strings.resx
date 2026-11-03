@@ -342,11 +342,11 @@
   <data name="Note_DoubleClickToEdit" xml:space="preserve">
     <value>Double-click to edit</value>
   </data>
-  <data name="Note_PreviewToggle" xml:space="preserve">
-    <value>Show preview (Ctrl+E)</value>
-  </data>
   <data name="Note_WysiwygUnavailable" xml:space="preserve">
     <value>Could not start the WYSIWYG editor; using source editing. ({0})</value>
+  </data>
+  <data name="Note_Fullscreen" xml:space="preserve">
+    <value>Toggle fullscreen (F11)</value>
   </data>
   <data name="Note_AlwaysOnTop" xml:space="preserve">
     <value>Always on top</value>

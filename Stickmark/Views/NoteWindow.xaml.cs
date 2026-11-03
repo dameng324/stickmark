@@ -50,6 +50,11 @@ public partial class NoteWindow : Window
     private readonly DispatcherTimer _fileReloadTimer;
     private bool _reloadPromptOpen;
 
+    private bool _isFullscreen;
+    private bool _suppressGeometrySync;
+    private bool _syncingZoom;
+    private Rect _fullscreenRestoreBounds;
+
     // WYSIWYG (offline CodeMirror 6) editing — toggle it on in the Markdown notes.
     private MarkdownWysiwyg? _wysiwyg;
     private bool _wysiwygOn;
@@ -100,6 +105,9 @@ public partial class NoteWindow : Window
         Activated += (_, _) => UpdateToolbarVisibility();
         Deactivated += OnWindowDeactivated;
         PreviewMouseDown += OnWindowPreviewMouseDown;
+        PreviewKeyDown += OnWindowPreviewKeyDown;
+        Preview.ZoomFactorChanged += (_, _) => OnWebViewZoomChanged(Preview.ZoomFactor);
+        WysiwygEditor.ZoomFactorChanged += (_, _) => OnWebViewZoomChanged(WysiwygEditor.ZoomFactor);
         MouseEnter += (_, _) => UpdateToolbarVisibility();
         MouseLeave += (_, _) => UpdateToolbarVisibility();
         // Lower WebView2 memory usage for notes hidden in the tray (restore when visible again) — Best-effort.
@@ -124,6 +132,9 @@ public partial class NoteWindow : Window
         InputBindings.Add(new KeyBinding(
             new RelayCommandImpl(_ => _ = ShowPreviewAsync()),
             new KeyGesture(Key.E, ModifierKeys.Control)));
+        InputBindings.Add(new KeyBinding(
+            new RelayCommandImpl(_ => ToggleFullscreen()),
+            new KeyGesture(Key.F11)));
         InputBindings.Add(new KeyBinding(
             new RelayCommandImpl(_ => ToggleInlineCode()),
             new KeyGesture(Key.OemTilde, ModifierKeys.Control)));
@@ -332,6 +343,7 @@ public partial class NoteWindow : Window
 
     private void SyncGeometry()
     {
+        if (_suppressGeometrySync || _isFullscreen) return;
         if (double.IsNaN(Left) || double.IsNaN(Top)) return;
         _viewModel.X = Left;
         _viewModel.Y = Top;
@@ -360,9 +372,9 @@ public partial class NoteWindow : Window
     }
 
     private string GetEditorPlainText() =>
-        new TextRange(Editor.Document.ContentStart, Editor.Document.ContentEnd).Text.TrimEnd('\r', '\n');
-
-    private async void PreviewButton_OnClick(object sender, RoutedEventArgs e) => await ShowPreviewAsync();
+        _viewModel.Format == NoteContentFormat.RichTextXaml
+            ? new TextRange(Editor.Document.ContentStart, Editor.Document.ContentEnd).Text.TrimEnd('\r', '\n')
+            : _viewModel.Content;
 
     private async Task ShowPreviewAsync()
     {
@@ -382,6 +394,7 @@ public partial class NoteWindow : Window
             _wysiwyg.Changed += OnWysiwygChanged;
 
             await _wysiwyg.LoadAsync(GetEditorPlainText());
+            ApplyZoomToWebViews();
             _wysiwygOn = true;
 
             Editor.Visibility = Visibility.Collapsed;
@@ -485,6 +498,77 @@ public partial class NoteWindow : Window
         await ExitWysiwygAsync(save: true);
     }
 
+    private void OnWindowPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape && _isFullscreen)
+        {
+            ExitFullscreen();
+            e.Handled = true;
+        }
+    }
+
+    private void FullscreenButton_OnClick(object sender, RoutedEventArgs e) => ToggleFullscreen();
+
+    private void ToggleFullscreen()
+    {
+        if (_isFullscreen) ExitFullscreen();
+        else EnterFullscreen();
+    }
+
+    private void EnterFullscreen()
+    {
+        if (_isFullscreen) return;
+        _fullscreenRestoreBounds = new Rect(Left, Top, ActualWidth, ActualHeight);
+        _isFullscreen = true;
+        _suppressGeometrySync = true;
+        try
+        {
+            ResizeMode = ResizeMode.NoResize;
+            WindowState = WindowState.Maximized;
+        }
+        finally { _suppressGeometrySync = false; }
+
+        FullscreenIcon.Data = Geometry.Parse("M6,2 V6 H2 M14,6 H10 V2 M10,14 V10 H14 M2,10 H6 V14");
+    }
+
+    private void ExitFullscreen()
+    {
+        if (!_isFullscreen) return;
+        _isFullscreen = false;
+        _suppressGeometrySync = true;
+        try
+        {
+            WindowState = WindowState.Normal;
+            ResizeMode = ResizeMode.CanResizeWithGrip;
+            Left = _fullscreenRestoreBounds.Left;
+            Top = _fullscreenRestoreBounds.Top;
+            Width = _fullscreenRestoreBounds.Width;
+            Height = _fullscreenRestoreBounds.Height;
+        }
+        finally { _suppressGeometrySync = false; }
+
+        FullscreenIcon.Data = Geometry.Parse("M2,6 V2 H6 M10,2 H14 V6 M14,10 V14 H10 M6,14 H2 V10");
+    }
+
+    private void OnWebViewZoomChanged(double factor)
+    {
+        if (_syncingZoom) return;
+        var clamped = Math.Clamp(factor, 0.25, 5.0);
+        if (Math.Abs(_viewModel.ZoomFactor - clamped) > 0.001)
+            _viewModel.ZoomFactor = clamped;
+    }
+
+    private void ApplyZoomToWebViews()
+    {
+        _syncingZoom = true;
+        try
+        {
+            Preview.ZoomFactor = _viewModel.ZoomFactor;
+            try { WysiwygEditor.ZoomFactor = _viewModel.ZoomFactor; } catch { /* editor WebView may not be initialized yet */ }
+        }
+        finally { _syncingZoom = false; }
+    }
+
     private void UpdateContentView()
     {
         // Exactly two content states: read-only Eye preview and WYSIWYG editing.
@@ -512,6 +596,7 @@ public partial class NoteWindow : Window
         {
             var html = HtmlRenderer.Render(GetEditorPlainText(), _viewModel.Format, _viewModel.Theme);
             await EnsureWebViewAsync().ConfigureAwait(true);
+            ApplyZoomToWebViews();
             Preview.NavigateToString(html);
         }
         catch (Exception ex)
@@ -762,6 +847,7 @@ public partial class NoteWindow : Window
 
     private async void OnClosing(object? sender, CancelEventArgs e)
     {
+        if (_isFullscreen) ExitFullscreen();
         try { await _viewModel.FlushAsync().ConfigureAwait(true); }
         catch { /* logged in VM */ }
 

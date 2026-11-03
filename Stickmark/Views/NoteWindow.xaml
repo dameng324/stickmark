@@ -60,6 +60,34 @@
             </Setter>
         </Style>
 
+        <Style x:Key="CloseButton" TargetType="Button">
+            <Setter Property="Width" Value="26" />
+            <Setter Property="Height" Value="22" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="#4A4A4A" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#E81123" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#C50F1F" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="FormatToggle" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
@@ -215,26 +243,54 @@
                         TextTrimming="CharacterEllipsis" />
 
                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
-                        <Button
-                            Click="PreviewButton_OnClick"
-                            Cursor="Hand"
-                            Style="{StaticResource ChromeButton}"
-                            ToolTip="{x:Static res:Strings.Note_PreviewToggle}"
-                            AutomationProperties.Name="{x:Static res:Strings.Note_PreviewToggle}"
-                            Content="Eye" />
                         <ToggleButton
                             Cursor="Hand"
                             IsChecked="{Binding IsAlwaysOnTop}"
                             Style="{StaticResource FormatToggle}"
                             ToolTip="{x:Static res:Strings.Note_AlwaysOnTop}"
-                            AutomationProperties.Name="{x:Static res:Strings.Note_AlwaysOnTop}"
-                            Content="Pin" />
+                            AutomationProperties.Name="{x:Static res:Strings.Note_AlwaysOnTop}">
+                            <Viewbox Width="12" Height="12">
+                                <Path
+                                    Data="M14,4 L12,4 L12,2 L4,2 L4,4 L2,4 L2,6 L7,6 L7,14 L9,14 L9,6 L14,6 Z"
+                                    Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Stretch="Uniform">
+                                    <Path.RenderTransform>
+                                        <RotateTransform Angle="-45" />
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Viewbox>
+                        </ToggleButton>
+                        <Button
+                            x:Name="FullscreenButton"
+                            Click="FullscreenButton_OnClick"
+                            Cursor="Hand"
+                            Style="{StaticResource ChromeButton}"
+                            ToolTip="{x:Static res:Strings.Note_Fullscreen}"
+                            AutomationProperties.Name="{x:Static res:Strings.Note_Fullscreen}">
+                            <Viewbox Width="12" Height="12">
+                                <Path
+                                    x:Name="FullscreenIcon"
+                                    Data="M2,6 V2 H6 M10,2 H14 V6 M14,10 V14 H10 M6,14 H2 V10"
+                                    Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                    StrokeThickness="1.5"
+                                    StrokeStartLineCap="Round"
+                                    StrokeEndLineCap="Round"
+                                    Stretch="Uniform" />
+                            </Viewbox>
+                        </Button>
                         <Button
                             Style="{StaticResource ChromeButton}"
                             ToolTip="{x:Static res:Strings.Note_More}"
                             AutomationProperties.Name="{x:Static res:Strings.Note_More}"
-                            Click="MoreMenu_OnClick"
-                            Content="⋯">
+                            Click="MoreMenu_OnClick">
+                            <Viewbox Width="14" Height="14">
+                                <Canvas Width="14" Height="14">
+                                    <Ellipse Canvas.Left="1.5" Canvas.Top="5.8" Width="2.4" Height="2.4" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    <Ellipse Canvas.Left="5.8" Canvas.Top="5.8" Width="2.4" Height="2.4" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    <Ellipse Canvas.Left="10.1" Canvas.Top="5.8" Width="2.4" Height="2.4" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                </Canvas>
+                            </Viewbox>
                             <Button.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="{x:Static res:Strings.Note_NewNote}" Click="NewButton_OnClick" />
@@ -249,22 +305,26 @@
                                         <Separator />
                                         <MenuItem Header="{x:Static res:Strings.Note_PrintMenu}" Click="PrintNote_OnClick" />
                                     </MenuItem>
+                                    <Separator />
+                                    <MenuItem Foreground="#C62828" Header="{x:Static res:Strings.Note_DeleteNote}" Click="DeleteButton_OnClick" />
                                 </ContextMenu>
                             </Button.ContextMenu>
                         </Button>
                         <Button
-                            Click="DeleteButton_OnClick"
-                            Style="{StaticResource ChromeButton}"
-                            ToolTip="{x:Static res:Strings.Note_DeleteNote}"
-                            AutomationProperties.Name="{x:Static res:Strings.Note_DeleteNote}"
-                            Content="Del" />
-                        <Button
                             Margin="0,0,4,0"
                             Click="CloseButton_OnClick"
-                            Style="{StaticResource ChromeButton}"
+                            Style="{StaticResource CloseButton}"
                             ToolTip="{x:Static res:Strings.Note_HideSaves}"
-                            AutomationProperties.Name="{x:Static res:Strings.Note_HideSaves}"
-                            Content="x" />
+                            AutomationProperties.Name="{x:Static res:Strings.Note_HideSaves}">
+                            <Viewbox Width="10" Height="10">
+                                <Path
+                                    Data="M 0,0 L 10,10 M 10,0 L 0,10"
+                                    Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                    StrokeThickness="1.6"
+                                    StrokeStartLineCap="Round"
+                                    StrokeEndLineCap="Round" />
+                            </Viewbox>
+                        </Button>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -482,7 +542,7 @@
             <wv2:WebView2
                 x:Name="Preview"
                 Grid.Row="2"
-                Margin="8,4,8,10"
+                Margin="0"
                 ToolTip="{x:Static res:Strings.Note_DoubleClickToEdit}"
                 DefaultBackgroundColor="Transparent"
                 Visibility="Collapsed" />

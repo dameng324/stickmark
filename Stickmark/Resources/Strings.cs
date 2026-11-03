@@ -89,9 +89,9 @@ public static class Strings
     public static string Note_WindowTitle => Get(nameof(Note_WindowTitle));
     public static string Note_ChangeColor => Get(nameof(Note_ChangeColor));
     public static string Note_DoubleClickToEdit => Get(nameof(Note_DoubleClickToEdit));
-    public static string Note_PreviewToggle => Get(nameof(Note_PreviewToggle));
     public static string Note_WysiwygUnavailable => Get(nameof(Note_WysiwygUnavailable));
     public static string Note_AlwaysOnTop => Get(nameof(Note_AlwaysOnTop));
+    public static string Note_Fullscreen => Get(nameof(Note_Fullscreen));
     public static string Note_OpenFile => Get(nameof(Note_OpenFile));
     public static string Note_NewNote => Get(nameof(Note_NewNote));
     public static string Note_AllNotes => Get(nameof(Note_AllNotes));

@@ -25,6 +25,9 @@ public sealed class Note
     public double Width { get; set; } = 280;
     public double Height { get; set; } = 280;
 
+    /// WebView zoom ratio for preview and WYSIWYG editing. 1.0 = 100%.
+    public double ZoomFactor { get; set; } = 1.0;
+
     public double Opacity { get; set; } = 1.0;
     public bool IsAlwaysOnTop { get; set; }
     public bool IsHidden { get; set; }

@@ -51,11 +51,13 @@ Screenshots are intentionally omitted from this fork until updated English captu
 
 ### Notes & editing
 - Rich‑text editor (WPF `RichTextBox`) with a toolbar that appears on hover/focus and hides in preview mode.
-- **Eye-first Markdown preview** — notes are rendered with [Markdig](https://github.com/xoofx/markdig) in a themed **WebView2** view. Double-click the rendered text to enter WYSIWYG editing; `Ctrl+E` or the Eye button returns to preview, and links open in your browser.
+- **Eye-first Markdown preview** — notes are rendered with [Markdig](https://github.com/xoofx/markdig) in a themed **WebView2** view. Double-click the rendered text to enter WYSIWYG editing; click elsewhere or press `Ctrl+E` to return to preview, and links open in your browser.
 - **WYSIWYG Markdown editing** — double‑click rendered note text to edit; markers hide as you type and editing ends when focus leaves. Saved as plain Markdown (offline).
 - **Formatting:** bold, italic, underline, strikethrough, bulleted & numbered lists, left/center/right alignment, inline code and code blocks, and a per‑selection font‑size picker.
 - **Task checkboxes** — insert inline `☐` items you can tick right inside the note.
 - **Preview / Edit toggle** (`Ctrl+E`) locks a note read‑only so you can't fumble the text while reading it.
+- **Fullscreen note** — press `F11` or use the fullscreen button; `Esc` restores the previous window size.
+- **Persistent zoom** — per-note WebView zoom is kept when switching between preview and editing, and across restarts.
 - **Auto title** — the first non‑empty line becomes the note's title (used for the list and for `[[links]]`).
 - **Autosave** — edits are debounced and persisted automatically; no save button.
 - **Templates** — start a new note from a built‑in template (Daily log · Meeting notes · To‑do list) from a note's **⋯** menu or the tray.
@@ -167,16 +169,16 @@ Open `Stickmark.sln` in Visual Studio 2022 or later if you prefer the IDE.
 
 ### Markdown preview and editing
 
-Each note opens in the read-only **Eye** state, showing rendered Markdown. There is no separate mode picker and no split editor.
+Each note opens in the read-only preview state, showing rendered Markdown. There is no separate mode picker, Eye toggle, or split editor.
 
-> `👁` = show preview · `Pin` = always on top
+> `Pin` = always on top · `Full` = fullscreen
 
 **How it works:**
 1. The note opens as a rendered Markdown preview.
 2. **Double-click the rendered text** to enter WYSIWYG editing.
-3. Click elsewhere, switch windows, or press **`👁` / `Ctrl+E`** to save and return to the Eye preview.
+3. Click elsewhere, switch windows, or press **`Ctrl+E`** to save and return to preview.
 
-WYSIWYG editing uses offline CodeMirror 6. The saved content remains plain Markdown source, so Vault `.md` files round-trip cleanly.
+WYSIWYG editing uses offline CodeMirror 6. The saved content remains plain Markdown source, so Vault `.md` files round-trip cleanly. Use `Ctrl` + mouse wheel to zoom; the zoom level is remembered per note and shared by preview and editing.
 
 > **Pasting:** pasted text is handled as plain Markdown by the editor, so markup is not silently converted into rich text.
 ### Open & link a `.md` file from disk

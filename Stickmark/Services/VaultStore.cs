@@ -53,7 +53,7 @@ public sealed class VaultStore
     private sealed record NoteState(
         string File, double X, double Y, double Width, double Height,
         double Opacity, bool IsAlwaysOnTop, bool IsHidden, string? LinkedFilePath,
-        bool IsDeleted, DateTime? DeletedAt);
+        bool IsDeleted, DateTime? DeletedAt, double ZoomFactor = 1.0);
 
     public IReadOnlyList<Note> Load()
     {
@@ -189,7 +189,7 @@ public sealed class VaultStore
 
     private static NoteState StateOf(Note note, string name) => new(
         name, note.X, note.Y, note.Width, note.Height, note.Opacity,
-        note.IsAlwaysOnTop, note.IsHidden, note.LinkedFilePath, note.IsDeleted, note.DeletedAt);
+        note.IsAlwaysOnTop, note.IsHidden, note.LinkedFilePath, note.IsDeleted, note.DeletedAt, note.ZoomFactor);
 
     private static void Apply(Note note, NoteState s)
     {
@@ -197,6 +197,7 @@ public sealed class VaultStore
         note.Opacity = s.Opacity; note.IsAlwaysOnTop = s.IsAlwaysOnTop;
         note.IsHidden = s.IsHidden; note.LinkedFilePath = s.LinkedFilePath;
         note.IsDeleted = s.IsDeleted; note.DeletedAt = s.DeletedAt;
+        note.ZoomFactor = s.ZoomFactor > 0 ? Math.Clamp(s.ZoomFactor, 0.25, 5.0) : 1.0;
     }
 
     private Dictionary<string, NoteState> ReadIndex()

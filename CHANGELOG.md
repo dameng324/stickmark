@@ -10,6 +10,10 @@ This file starts from the point it was introduced — earlier history lives in t
 ### Changed
 - Renamed the application and repository to **Stickmark** (`Stickmark.exe`, `Stickmark.sln`, `Stickmark` namespace, and `%LocalAppData%\Stickmark`). Existing `%LocalAppData%\StickyPad` data is migrated automatically on first launch.
 - Removed the Text / Markdown / HTML mode controls and the split editor. Notes now open in a read-only Eye preview; double-clicking the rendered text enters WYSIWYG editing, and losing focus returns to preview.
+- Added a fullscreen note mode (`F11` / header button).
+- Removed the redundant Eye button and moved Delete into the overflow menu with red emphasis.
+- Reworked the close button as a vector icon and tightened the top spacing in preview mode.
+- Persisted per-note WebView zoom across preview/editing switches and restarts.
 - Release builds now publish an **Inno Setup installer** instead of a bare executable. The in-app updater downloads and verifies the installer before applying it.
 - Retargeted the application and test projects to `net10.0-windows`.
 - Removed the Korean localization resources and translated repository comments and documentation to English.

@@ -78,6 +78,9 @@ public sealed partial class NoteViewModel : ObservableObject, IDisposable
     private bool _isPreviewMode;
 
     [ObservableProperty]
+    private double _zoomFactor = 1.0;
+
+    [ObservableProperty]
     private double _editorFontSize = 14;
 
     public NoteTheme Theme => NotePalette.For(Color);
@@ -109,6 +112,7 @@ public sealed partial class NoteViewModel : ObservableObject, IDisposable
         _color = note.Color;
         _opacity = ClampOpacity(note.Opacity);
         _isAlwaysOnTop = note.IsAlwaysOnTop;
+        _zoomFactor = ClampZoom(note.ZoomFactor);
         _lastSyncedText = note.Content;
 
         _saver = new DebounceAction(SaveDelay, _ => SaveAsync());
@@ -140,6 +144,7 @@ public sealed partial class NoteViewModel : ObservableObject, IDisposable
     partial void OnColorChanged(NoteColor value) => Schedule();
     partial void OnOpacityChanged(double value) => Schedule();
     partial void OnIsAlwaysOnTopChanged(bool value) => Schedule();
+    partial void OnZoomFactorChanged(double value) => Schedule();
 
     [RelayCommand]
     private void SetColor(NoteColor color) => Color = color;
@@ -215,6 +220,7 @@ public sealed partial class NoteViewModel : ObservableObject, IDisposable
             Note.Color = Color;
             Note.Opacity = Opacity;
             Note.IsAlwaysOnTop = IsAlwaysOnTop;
+            Note.ZoomFactor = ZoomFactor;
             // SaveContentAsync preserves the trash can status (IsDeleted/DeletedAt) as a DB value.
             // Do not use UpsertAsync so that the window of the deleted note is closed and not revived even if flushed.
             await _repository.SaveContentAsync(Note).ConfigureAwait(false);
@@ -255,6 +261,12 @@ public sealed partial class NoteViewModel : ObservableObject, IDisposable
     public bool IsEmpty => string.IsNullOrWhiteSpace(PlainText);
 
     public void Dispose() => _saver.Dispose();
+
+    private static double ClampZoom(double value)
+    {
+        if (double.IsNaN(value) || value <= 0) return 1.0;
+        return Math.Clamp(value, 0.25, 5.0);
+    }
 
     private static double ClampOpacity(double value)
     {
